@@ -4,8 +4,9 @@ import { AppLoading } from 'expo';
 import { ImageBackground, StyleSheet, Text, View, FlatList, ScrollView, RefreshControl, Image, Dimensions, ActivityIndicator, TouchableWithoutFeedback, StatusBar, SafeAreaView, Platform, MainScreen, TouchableOpacity, Linking } from "react-native";
 import { BlurView } from 'expo-blur';
 import { ScrollView as GestureHandlerScrollView } from 'react-native-gesture-handler';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faDollarSign, faMapMarked, faBus, faInfo, faUmbrella } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faDollarSign, faMapMarked, faBus, faInfo, faUmbrella } from '@fortawesome/free-solid-svg-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 class MainMenu extends React.Component{
   constructor(props) {
@@ -67,8 +68,12 @@ export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [isWLoading, setWLoading] = useState(true);
   const [wdata, setWData] = useState([]);
+
   const [isCLoading, setCLoading] = useState(true);
   const [cdata, setCData] = useState([]);
+
+  const [isBLoading, setBLoading] = useState(true);
+  const [bdata, setBData] = useState([]);
 
   useEffect(() => {
     fetch('http://spacedesign.in.ua/my_kovel/weather.php')
@@ -84,6 +89,14 @@ export default function App() {
       .then((json) => setCData(json))
       .catch((error) => console.error(error))
       .finally(() => setCLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch('http://spacedesign.in.ua/my_kovel/buses.php')
+        .then((response) => response.json())
+        .then((json) => setBData(json))
+        .catch((error) => console.error(error))
+        .finally(() => setBLoading(false));
   }, []);
 
   if(!fontLoaded){
@@ -144,6 +157,7 @@ export default function App() {
   //   '13n': require("./images/icons/13n.png"),
   //   '50n': require("./images/icons/50n.png"),
   // };
+
   return(
     
     <View style={styles.container}>
@@ -157,6 +171,19 @@ export default function App() {
           </View>
           <View style={[styles.scrollElem, styles.pt_5]}>
             <Text style={[styles.h1, styles.text_line_through, styles.text_light, styles.text_shadow]}>Розклад</Text>
+            <DropDownPicker
+                items={[
+                  {label: 'UK', value: 'uk'},
+                  {label: 'France', value: 'france'},
+                ]}
+                containerStyle={{height: 40}}
+                style={{backgroundColor: '#fafafa'}}
+                itemStyle={{
+                  justifyContent: 'flex-start'
+                }}
+                dropDownStyle={{backgroundColor: '#fafafa'}}
+                // onChangeItem={}
+            />
           </View>
           <View style={[styles.scrollElem, styles.text_center, styles.pt_10]}>
               <View>
